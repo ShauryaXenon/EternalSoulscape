@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<!--
+  JAI HIND — SUPERIOR MASTERPIECE (Single-file HTML)
+  - Removed the local shop as requested.
+  - Enhanced aesthetic (cyberpunk + premium + traditional Indian accents).
+  - Added new tabs: Gallery, Events, Donations (placeholder), Stories, Timeline, Media.
+  - Retains robust Flag Selfie (WebRTC) + Wall of Honor (200 patriots) + Anthem controls + Live Chat (local).
+  - Single-file, client-only. For real-world backend features (donations, live global chat), integrate a server or Firebase.
+  NOTE: Replace anthemAudio.src with a licensed anthem file for production.
+-->
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>🇮🇳 Jai Hind — Celebration of Freedom  Masterpiece</title>
+  <meta name="description" content="Jai Hind — A futuristic patriotic site with Wall of Honor, Flag Selfie, Gallery, Events, Timeline, Live Chat and more." />
+  <style>
+    /* ---------- Design tokens ---------- */
+    :root{
+      --bg:#05081a;
+      --panel: rgba(255,255,255,0.03);
+      --glass: rgba(255,255,255,0.04);
+      --saffron:#ff9933;
+      --green:#138808;
+      --white:#ffffff;
+      --accent: linear-gradient(90deg,var(--saffron),#fff,var(--green));
+      --neon: 0 8px 40px rgba(0,0,0,0.6);
+      --radius:16px;
+      --max:1200px;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    /* ---------- Reset ---------- */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      background:
+        radial-gradient(800px 400px at 10% 10%, rgba(255,153,51,0.03), transparent 6%),
+        radial-gradient(900px 450px at 95% 90%, rgba(19,136,8,0.02), transparent 8%),
+        linear-gradient(180deg,#040817 0%, #06142a 100%);
+      color:var(--white);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:18px;
+      overflow-y:auto;
+    }
+
+    /* ---------- Layout ---------- */
+    .wrap{max-width:var(--max);margin:0 auto;display:flex;flex-direction:column;gap:16px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:10px 16px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));border:1px solid var(--glass);box-shadow:var(--neon);backdrop-filter:blur(8px)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:60px;height:60px;border-radius:12px;background:conic-gradient(var(--saffron),#fff,var(--green));display:grid;place-items:center;font-weight:900;color:#012;font-size:22px;transform:rotate(-10deg);box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+    .title{line-height:1}
+    .title h1{font-size:20px;letter-spacing:0.6px;font-weight:900;background:-webkit-linear-gradient(left,var(--saffron),#fff,var(--green));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .title p{font-size:12px;color:rgba(255,255,255,0.65);margin-top:2px}
+
+    nav.topnav{display:flex;gap:8px;align-items:center}
+    nav.topnav a{color:rgba(255,255,255,0.95);text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:700;transition:all .18s}
+    nav.topnav a:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+
+    .main{display:grid;grid-template-columns:1fr 420px;gap:18px;align-items:start}
+    @media (max-width:1000px){ .main{grid-template-columns:1fr} nav.topnav{display:none} }
+
+    /* ---------- Hero ---------- */
+    .hero{padding:22px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.008));border:1px solid var(--glass);box-shadow:0 30px 80px rgba(0,0,0,0.5);position:relative;overflow:hidden}
+    .hero-grid{display:flex;gap:18px;align-items:center}
+    .hero-left{flex:1}
+    .hero h2{font-size:38px;margin-bottom:6px;line-height:1;color:transparent;background:linear-gradient(90deg,var(--saffron),#fff,var(--green));-webkit-background-clip:text}
+    .hero p{color:rgba(255,255,255,0.85);margin-bottom:12px}
+    .hero-cta{display:flex;gap:10px;flex-wrap:wrap}
+    .pill{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);font-weight:700}
+
+    /* animated flag & particles placeholders */
+    canvas#flagCanvas{position:absolute;inset:0;z-index:1;opacity:0.94;pointer-events:none}
+
+    /* ---------- Right Widgets ---------- */
+    aside.widgets{display:flex;flex-direction:column;gap:12px;position:relative;z-index:6}
+    .card{padding:12px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+    .muted{color:rgba(255,255,255,0.65)}
+
+    /* ---------- Tabs ---------- */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .tab{padding:10px 14px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03);font-weight:800;cursor:pointer}
+    .tab.active{background:linear-gradient(90deg,var(--saffron),#fff,var(--green));color:#012}
+
+    /* ---------- Sections ---------- */
+    section{margin-top:14px}
+    .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+
+    /* Wall of Honor */
+    #wallGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+    .hero-card{padding:12px;border-radius:12px;background:rgba(255,255,255,0.015);cursor:pointer;position:relative;border:1px solid rgba(255,255,255,0.02)}
+    .hero-card:hover{transform:translateY(-6px);transition:all .22s}
+    .salute-badge{position:absolute;top:8px;left:50%;transform:translateX(-50%);padding:6px 10px;border-radius:10px;background:linear-gradient(90deg,var(--saffron),var(--green));color:#012;font-weight:800;display:none}
+
+    /* Selfie */
+    #selfieWrap{display:flex;flex-direction:column;gap:8px}
+    video#selfieVideo{width:100%;border-radius:12px;background:#000;height:280px;object-fit:cover}
+    canvas#selfieCanvas{width:100%;border-radius:12px;background:#000;display:block}
+
+    /* Gallery */
+    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+    .gallery img{width:100%;height:160px;object-fit:cover;border-radius:12px;display:block;box-shadow:0 14px 40px rgba(0,0,0,0.6)}
+
+    /* Timeline */
+    .timeline{display:flex;flex-direction:column;gap:12px;padding-top:8px}
+    .timeline .item{display:flex;gap:12px;align-items:flex-start}
+    .timeline .dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(90deg,var(--saffron),var(--green));margin-top:6px}
+
+    /* Footer */
+    footer{margin-top:18px;padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));display:flex;justify-content:space-between;align-items:center;border:1px solid var(--glass)}
+    .small{font-size:13px;color:rgba(255,255,255,0.7)}
+
+    /* micro animations */
+    .glow {
+      position:relative;
+    }
+    .glow::after{content:'';position:absolute;inset:-4px;border-radius:inherit;filter:blur(18px);opacity:0.12;background:linear-gradient(90deg,var(--saffron),#fff,var(--green));z-index:-1}
+  </style>
+</head>
+<body>
+  <canvas id="flagCanvas"></canvas>
+
+  <div class="wrap">
+    <!-- Header -->
+    <header>
+      <div class="brand">
+        <div class="logo">🇮🇳</div>
+        <div class="title">
+          <h1>JAI HIND</h1>
+          <p>Celebration • Futuristic • Heartfelt</p>
+        </div>
+      </div>
+
+      <nav class="topnav" aria-label="Primary">
+        <a href="#home">Home</a>
+        <a href="#anthem">Anthem</a>
+        <a href="#wall">Wall of Honor</a>
+        <a href="#selfie">Flag Selfie</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#events">Events</a>
+        <a href="#stories">Stories</a>
+        <a href="#timeline">Timeline</a>
+        <a href="#media">Media</a>
+        <a href="#donate" class="pill">Donate</a>
+      </nav>
+    </header>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Left (primary content) -->
+      <main>
+        <section class="hero" id="home" aria-label="Home">
+          <div class="hero-grid">
+            <div class="hero-left">
+              <h2 class="glow">🇮🇳 Jai Hind — Celebrate Freedom</h2>
+              <p>Experience a polished, high-aesthetic celebration website. Explore the Wall of Honor, capture Flag Selfies, view the Gallery, read Stories of valour, join Events, and relive the Timeline of India's freedom journey.</p>
+              <div class="hero-cta">
+                <button class="pill" id="tourBtn">Take a Quick Tour</button>
+                <button class="pill" id="fireBtn">Trigger Fireworks</button>
+                <button class="pill" id="anthemBtn">Play Anthem</button>
+              </div>
+
+              <!-- Tabs (in content) -->
+              <div class="tabs" style="margin-top:14px" id="contentTabs">
+                <div class="tab active" data-tab="wall">Wall of Honor</div>
+                <div class="tab" data-tab="selfie">Flag Selfie</div>
+                <div class="tab" data-tab="gallery">Gallery</div>
+                <div class="tab" data-tab="events">Events</div>
+                <div class="tab" data-tab="stories">Stories</div>
+                <div class="tab" data-tab="timeline">Timeline</div>
+                <div class="tab" data-tab="media">Media</div>
+                <div class="tab" data-tab="donate">Donate</div>
+              </div>
+            </div>
+
+            <aside class="widgets">
+              <div class="card glow">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div>
+                    <div style="font-weight:900">Patriots Online</div>
+                    <div class="muted" id="onlineCount">--</div>
+                  </div>
+                  <div class="pill" id="dayNight">Night</div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <strong>Freedom Bot</strong>
+                  <div class="muted">Ask something</div>
+                </div>
+                <div style="margin-top:10px">
+                  <input id="botInput" placeholder="e.g., Tell me about Bhagat Singh" style="width:100%;padding:8px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--white)" />
+                  <div style="display:flex;gap:8px;margin-top:8px">
+                    <button class="pill" id="botAsk">Ask</button>
+                    <button class="pill" id="botClear">Clear</button>
+                  </div>
+                </div>
+                <div id="botReplies" style="margin-top:8px;max-height:140px;overflow:auto" class="muted"></div>
+              </div>
+
+              <div class="card">
+                <strong>Anthem</strong>
+                <div style="margin-top:8px" class="muted">Play / Pause • Salute Animation</div>
+                <div style="display:flex;gap:8px;margin-top:8px">
+                  <button class="pill" id="anthemPlay">Play</button>
+                  <button class="pill" id="anthemSalute">Salute</button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- Wall of Honor -->
+        <section id="wall" class="card" data-panel="wall" aria-label="Wall of Honor">
+          <div class="section-title">
+            <h3>Wall of Honor ✨</h3>
+            <div class="muted">Tap/Click a hero to salute</div>
+          </div>
+          <div style="margin-top:10px">
+            <input id="searchHero" placeholder="Search a hero..." style="width:100%;padding:10px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--white)" />
+          </div>
+          <div id="wallGrid" style="margin-top:12px"></div>
+        </section>
+
+        <!-- Selfie -->
+        <section id="selfie" class="card hidden" data-panel="selfie">
+          <div class="section-title">
+            <h3>Flag Selfie 🤳</h3>
+            <div class="muted">Webcam overlay • Capture • Download • Share</div>
+          </div>
+          <div id="selfieWrap" style="margin-top:12px">
+            <video id="selfieVideo" autoplay playsinline muted></video>
+            <canvas id="selfieCanvas"></canvas>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="pill" id="startCam">Start Camera</button>
+              <button class="pill" id="stopCam" style="background:#ff6b6b">Stop</button>
+              <button class="pill" id="capture">Capture</button>
+              <button class="pill" id="downloadSelfie">Download</button>
+              <button class="pill" id="shareSelfie">Share</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+              <select id="filterSelect" style="padding:8px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--white)">
+                <option value="tiranga">Tiranga Ribbon</option>
+                <option value="sparkle">Golden Sparkles</option>
+                <option value="badge">Freedom Badge</option>
+              </select>
+              <input id="filterOpacity" type="range" min="0.2" max="1" step="0.05" value="0.9" />
+            </div>
+            <div id="selfieStatus" class="muted" style="margin-top:8px">Camera stopped.</div>
+          </div>
+        </section>
+
+        <!-- Gallery -->
+        <section id="gallery" class="card hidden" data-panel="gallery">
+          <div class="section-title"><h3>Gallery • Visuals</h3><div class="muted">High-res patriotic imagery & videos</div></div>
+          <div class="gallery" style="margin-top:12px">
+            <!-- placeholder images (replace with actual assets in production) -->
+            <img src="https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=8f0d9e4f1bdc7bc6f3a6a5a8d3b7f9a6" alt="Flag scene 1" />
+            <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3f2f55f0b3f4b1a0f2f3f2f3f2f3f2f3" alt="Flag scene 2" />
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=6f3f2a3b4c5d6e7f8a9b0c1d2e3f4a5b" alt="Flag scene 3" />
+            <img src="https://images.unsplash.com/photo-1506806732259-39c2d0268443?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=1234567890abcdef1234567890abcdef" alt="Flag scene 4" />
+          </div>
+        </section>
+
+        <!-- Events -->
+        <section id="events" class="card hidden" data-panel="events">
+          <div class="section-title"><h3>Events • Calendar</h3><div class="muted">Upcoming live events & local celebrations</div></div>
+          <div style="margin-top:12px" class="grid">
+            <div class="card">
+              <strong>Independence Day Live Stream</strong>
+              <div class="muted">Aug 15 • 09:00 AM</div>
+              <div style="margin-top:8px" class="muted">Live flag hoisting, cultural program & stories.</div>
+            </div>
+            <div class="card">
+              <strong>Wall of Honor Memorial</strong>
+              <div class="muted">Aug 16 • 07:00 PM</div>
+              <div style="margin-top:8px" class="muted">Tribute session & Q/A with veterans (demo).</div>
+            </div>
+            <div class="card">
+              <strong>Selfie Competition</strong>
+              <div class="muted">Aug 17 • All day</div>
+              <div style="margin-top:8px" class="muted">Best flag selfie wins a digital certificate (demo).</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stories -->
+        <section id="stories" class="card hidden" data-panel="stories">
+          <div class="section-title"><h3>Stories of Courage</h3><div class="muted">Read first-hand tales & mini-biographies</div></div>
+          <div class="grid" style="margin-top:12px">
+            <div class="card">
+              <strong>Bhagat Singh — The Young Revolutionary</strong>
+              <div class="muted" style="margin-top:8px">A short passage about courage and sacrifice. (Expand in production.)</div>
+            </div>
+            <div class="card">
+              <strong>Rani Lakshmibai — The Warrior Queen</strong>
+              <div class="muted" style="margin-top:8px">A short passage about leadership and valor.</div>
+            </div>
+            <div class="card">
+              <strong>Subhas Chandra Bose — INA</strong>
+              <div class="muted" style="margin-top:8px">A short passage about his leadership and struggle.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Timeline -->
+        <section id="timeline" class="card hidden" data-panel="timeline">
+          <div class="section-title"><h3>Freedom Timeline</h3><div class="muted">Key dates & milestones</div></div>
+          <div class="timeline" style="margin-top:12px">
+            <div class="item"><div class="dot"></div><div><strong>1857</strong><div class="muted">First major revolt — seeds of freedom.</div></div></div>
+            <div class="item"><div class="dot"></div><div><strong>1919</strong><div class="muted">Jallianwala Bagh — a turning point.</div></div></div>
+            <div class="item"><div class="dot"></div><div><strong>1942</strong><div class="muted">Quit India Movement.</div></div></div>
+            <div class="item"><div class="dot"></div><div><strong>1947</strong><div class="muted">Independence — 15 August 1947.</div></div></div>
+          </div>
+        </section>
+
+        <!-- Media -->
+        <section id="media" class="card hidden" data-panel="media">
+          <div class="section-title"><h3>Media • Videos & Audio</h3><div class="muted">Patriotic clips & instrumental tracks</div></div>
+          <div style="margin-top:12px" class="grid">
+            <div class="card">
+              <strong>Flag Waving Visual</strong>
+              <div class="muted" style="margin-top:8px">A sample cinematic loop (replace with high-res assets in production).</div>
+            </div>
+            <div class="card">
+              <strong>Instrumental Track</strong>
+              <div class="muted" style="margin-top:8px">Click play to hear (user gesture required).</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Donate -->
+        <section id="donate" class="card hidden" data-panel="donate">
+          <div class="section-title"><h3>Donate • Support (Demo)</h3><div class="muted">Safe donation flow requires server or payment gateway integration.</div></div>
+          <div style="margin-top:12px" class="grid">
+            <div class="card"><strong>Support Wall Maintenance</strong><div class="muted" style="margin-top:8px">Demo placeholder — integrate Razorpay/Stripe for real donations.</div></div>
+            <div class="card"><strong>Support Veterans' Families</strong><div class="muted" style="margin-top:8px">Demo placeholder — secure server integration required.</div></div>
+          </div>
+        </section>
+
+        <!-- Live Chat -->
+        <section id="chat" class="card" style="margin-top:12px">
+          <div class="section-title"><h3>Live Chat • Freedom Bot</h3><div class="muted">Local demo. For global chat, integrate a server.</div></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="chatInput" placeholder="Ask Freedom Bot or chat..." style="flex:1;padding:10px;border-radius:12px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--white)" />
+            <button class="pill" id="sendChat">Send</button>
+          </div>
+          <div id="chatWindow" style="margin-top:10px;max-height:220px;overflow:auto"></div>
+        </section>
+      </main>
+
+      <!-- Right column (secondary) -->
+      <aside class="widgets">
+        <div class="card">
+          <strong>Quick Links</strong>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+            <button class="pill" data-s="#wall">Wall of Honor</button>
+            <button class="pill" data-s="#selfie">Flag Selfie</button>
+            <button class="pill" data-s="#gallery">Gallery</button>
+            <button class="pill" data-s="#events">Events</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>Share the Vibe</strong>
+          <div class="muted" style="margin-top:8px">Generate a personalized Independence Day card (client-side)</div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="cardName" placeholder="Your name" style="flex:1;padding:8px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--white)" />
+            <button class="pill" id="genCard">Generate</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>Theme</strong>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="pill" id="toggleTheme">Toggle Day/Night</button>
+            <button class="pill" id="muteAnthem">Mute Anthem</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="small">© Jai Hind Celebration — Aesthetic Masterpiece • Built with ❤️</div>
+      <div class="small">Designed for demo & presentation. Integrate server & assets for production.</div>
+    </footer>
+  </div>
+
+  <!-- ---------- SCRIPT: All client-side logic ---------- -->
+  <script>
+  (function(){
+    /* ----------------- Utilities ----------------- */
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+    const create = (t, attrs={}) => { const e = document.createElement(t); Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v)); return e; };
+
+    // small helper to animate a quick spotlight
+    function spotlight(el){
+      el.animate([{ transform:'scale(0.98)', boxShadow:'0 0 0 rgba(0,0,0,0)' }, { transform:'scale(1)', boxShadow:'0 30px 80px rgba(0,0,0,0.4)' }], { duration:700, easing:'cubic-bezier(.2,.9,.2,1)' });
+    }
+
+    /* ----------------- Flag Canvas -- subtle waving background ----------------- */
+    (function flagCanvas(){
+      const c = document.getElementById('flagCanvas');
+      const ctx = c.getContext('2d');
+      function resize(){ c.width = innerWidth; c.height = innerHeight * 0.6; }
+      resize(); window.addEventListener('resize', resize);
+      let t=0;
+      function draw(){
+        ctx.clearRect(0,0,c.width,c.height);
+        // soft radial glows
+        const g = ctx.createLinearGradient(0,0,c.width,c.height);
+        g.addColorStop(0,'rgba(255,153,51,0.03)');
+        g.addColorStop(0.6,'rgba(255,255,255,0.01)');
+        g.addColorStop(1,'rgba(19,136,8,0.02)');
+        ctx.fillStyle = g; ctx.fillRect(0,0,c.width,c.height);
+        // draw 3 ribbons of tricolor waves
+        const baseY = c.height*0.25;
+        for(let i=0;i<3;i++){
+          ctx.beginPath();
+          const col = i===0? 'rgba(255,153,51,0.9)' : i===1? 'rgba(255,255,255,0.95)' : 'rgba(19,136,8,0.9)';
+          const amp = 16 + i*6;
+          for(let x=0;x<c.width;x+=6){
+            const y = baseY + i*40 + Math.sin((x*0.01) + t + i)*amp;
+            if(x===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+          }
+          ctx.lineTo(c.width, c.height); ctx.lineTo(0,c.height);
+          ctx.closePath(); ctx.fillStyle = col; ctx.fill();
+        }
+        t += 0.03;
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    /* ----------------- Tabs logic ----------------- */
+    (function tabs(){
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      const panels = Array.from(document.querySelectorAll('[data-panel]'));
+      function show(name){
+        panels.forEach(p => p.classList.add('hidden'));
+        const panel = document.querySelector('[data-panel="'+name+'"]');
+        if(panel) panel.classList.remove('hidden');
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+        // smooth scroll to top of main content
+        document.querySelector('main').scrollIntoView({behavior:'smooth'});
+      }
+      tabs.forEach(t => t.addEventListener('click', ()=> show(t.dataset.tab)));
+      // initial show
+      show('wall');
+
+      // quick nav buttons
+      $$('[data-s]').forEach(b => b.addEventListener('click', ()=> {
+        const s = b.getAttribute('data-s');
+        const el = document.querySelector(s);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+      }));
+    })();
+
+    /* ----------------- Wall of Honor (200 names provided earlier) ----------------- */
+    (function wall(){
+      const names = [
+        "Mangal Pandey – Revolt of 1857","Rani Lakshmibai – Revolt of 1857","Tatya Tope – Revolt of 1857","Kunwar Singh – Revolt of 1857",
+        "Bahadur Shah Zafar – Revolt of 1857","Begum Hazrat Mahal – Revolt of 1857","Bhagat Singh – 1931","Rajguru – 1931",
+        "Sukhdev – 1931","Chandrashekhar Azad – 1931","Ashfaqulla Khan – Kakori Conspiracy 1927","Ram Prasad Bismil – Kakori Conspiracy 1927",
+        "Roshan Singh – Kakori Conspiracy 1927","Khudiram Bose – 1908","Prafulla Chaki – 1908","Jatin Das – Hunger Strike 1929",
+        "Madan Lal Dhingra – 1909","Batukeshwar Dutt – 1965 (post-independence)","Udham Singh – 1940","Matangini Hazra – 1942",
+        "Lala Lajpat Rai – 1928","Bipin Chandra Pal – 1932","Subhas Chandra Bose – 1945 (disputed)","Master Da Surya Sen – 1934",
+        "Kalpana Datta – 1944","Preetilata Waddedar – 1932","Birsa Munda – 1900","Alluri Sitarama Raju – 1924","Tantia Bhil – 1889",
+        "Kanaklata Barua – 1942","K. M. Cariappa – 1947–48 War","Major Somnath Sharma – 1947–48 War","Naik Jadunath Singh – 1947–48 War",
+        "Lance Naik Karam Singh – 1947–48 War","Brigadier Rajinder Singh – 1947–48 War","Captain Taro Singh – 1947–48 War","Sepoy Dewan Singh – 1947–48 War",
+        "Captain Harish Bahl – 1947–48 War","Lt. Col. Dewan Ranjit Rai – 1947–48 War","Brigadier Mohammed Usman – 1947–48 War",
+        "Captain Gurbachan Singh Salaria – Congo Mission 1961","Lt. Col. A.B. Tarapore – 1965 War","Company Quartermaster Havildar Abdul Hamid – 1965 War",
+        "Lt. Col. Desmond Hayde – 1965 War","Flying Officer Nirmal Jit Singh Sekhon – 1971 War","Second Lt. Arun Khetarpal – 1971 War",
+        "Major Hoshiar Singh – 1971 War","Major Shaitan Singh – 1962 War","Brigadier T.S. Oberoi – 1971 War","Captain Mahendra Nath Mulla – 1971 War",
+        "Sepoy Hamid – 1965 War","Major Ramaswamy Parameswaran – IPKF 1987","Capt. Saurabh Kalia – Kargil War 1999","Lt. Manoj Kumar Pandey – Kargil War 1999",
+        "Capt. Vikram Batra – Kargil War 1999","Grenadier Yogendra Singh Yadav – Kargil War 1999","Rifleman Sanjay Kumar – Kargil War 1999",
+        "Maj. Padmapani Acharya – Kargil War 1999","Maj. Rajesh Adhikari – Kargil War 1999","Naib Subedar Bana Singh – Siachen 1987",
+        "Havildar Chuni Lal – Kupwara 2007","Capt. Anuj Nayyar – Kargil War 1999","Lt. Balwan Singh – Kargil War 1999","Lt. Vijayant Thapar – Kargil War 1999",
+        "Capt. N. Kenguruse – Kargil War 1999","Capt. Jasrotia – Kargil War 1999","Sepoy Imliakum Ao – Kargil War 1999","Lt. Kanad Bhattacharya – Kargil War 1999",
+        "Capt. Digendra Kumar – Kargil War 1999","Lt. Col. R. Viswanathan – Kargil War 1999","Maj. Sonam Wangchuk – Kargil War 1999",
+        "Rifleman Jaswant Singh Rawat – 1962 War","Hav. Abdul Hamid – 1965 War","Maj. K.C. Cariappa – 1965 War","Maj. S.S. Narayanan – 1971 War",
+        "Lt. Cdr. M.N. Mulla – 1971 War","Sep. Joginder Singh – 1962 War","Naik Kewal Singh – 1965 War","Brig. Mohammad Usman – 1947–48 War",
+        "Maj. Gen. Ian Cardozo – 1971 War","Lt. Balbir Singh – 1971 War","Maj. Gen. Lachhman Singh Lehl – 1971 War","Capt. Deepak Lal – 1999 War",
+        "Capt. Deepak Sathe – 2020 (Service)","Col. Santosh Babu – Galwan 2020","Naib Sub. Nuduram Soren – Galwan 2020","Hav. K. Palani – Galwan 2020",
+        "Sep. Gurtej Singh – Galwan 2020","Maj. Mohit Sharma – 2009","Col. Vasanth Venugopal – 2007","Maj. Sandeep Unnikrishnan – 26/11 Mumbai",
+        "Hav. Gajendra Singh – 26/11 Mumbai","Insp. Mohan Chand Sharma – 2008","Insp. Tukaram Omble – 26/11 Mumbai","Sub. Sanjay Kumar – 1999 War",
+        "Rifleman Rajender Singh – 1999 War","Naik Digendra Singh – 1999 War","Col. Jojan Thomas – 2008","Maj. Kunal Gosavi – 2008","Col. Vasanth – 2007",
+        "Maj. Ajit Singh – 1999 War","Hav. Satpal Singh – 1999 War","Sepoy Jasbir Singh – 1999 War","Rifleman Manoj Kumar – 1999 War",
+        "Capt. Arvind Singh – 1999 War","Lt. Vivek Gupta – 1999 War","Maj. Saravanan – 1999 War","Lt. Keishing Clifford Nongrum – 1999 War",
+        "Maj. Puru Shotam – 1999 War","Capt. N.K. Joshi – 1999 War","Hav. Ghulam Mohammad – 1999 War","Sep. Munish Kumar – 1999 War",
+        "Rifleman Baldev Singh – 1999 War","Maj. Navneet Mehra – 1999 War","Capt. Harpreet Singh – 1999 War","Maj. Pankaj Singh – 1999 War",
+        "Lt. Amit Bhardwaj – 1999 War","Rifleman Prem Kumar – 1999 War","Maj. S.P. Singh – 1999 War","Capt. Ajay Ahuja – 1999 War",
+        "Sqn. Ldr. Ajay Vohra – 1999 War","Flt. Lt. Nachiketa – 1999 War","Maj. D.S. Chauhan – 1999 War","Maj. Ajay Singh Jasrotia – 1999 War",
+        "Rifleman Yogesh Kumar – 1999 War","Capt. Shashikant Sharma – 1999 War","Lt. Gaurav Kumar – 1999 War","Maj. Harvinder Singh – 1999 War",
+        "Hav. Satish Kumar – 1999 War","Rifleman Jitender Singh – 1999 War","Capt. Rohit Kapoor – 1999 War","Maj. Ravinder Singh – 1999 War",
+        "Lt. Anil Kumar – 1999 War","Maj. Sunil Kumar – 1999 War","Capt. Rajeev Kumar – 1999 War","Lt. Manoj Sharma – 1999 War",
+        "Maj. Rakesh Singh – 1999 War","Capt. Dinesh Kumar – 1999 War","Lt. Ramesh Kumar – 1999 War","Maj. Kuldeep Singh – 1999 War",
+        "Capt. Vijay Singh – 1999 War","Maj. Gurpreet Singh – 1999 War","Lt. Parminder Singh – 1999 War","Maj. Amrik Singh – 1999 War",
+        "Capt. Rajinder Singh – 1999 War","Maj. Bhupinder Singh – 1999 War","Lt. Krishan Kumar – 1999 War","Maj. Deepinder Singh – 1999 War",
+        "Capt. Mahavir Singh – 1999 War","Maj. Balwant Singh – 1999 War","Lt. Ajmer Singh – 1999 War","Maj. Praveen Kumar – 1999 War",
+        "Capt. Sunil Singh – 1999 War","Lt. Rajat Kumar – 1999 War","Maj. Dharmendra Singh – 1999 War","Capt. Vikas Kumar – 1999 War",
+        "Maj. Uday Singh – 1999 War","Lt. Arun Singh – 1999 War","Maj. Lokesh Sharma – 1999 War","Capt. Suresh Kumar – 1999 War",
+        "Lt. Parveen Singh – 1999 War","Maj. Lalit Kumar – 1999 War","Capt. Ravinder Kumar – 1999 War","Lt. Mahesh Kumar – 1999 War",
+        "Maj. Surinder Singh – 1999 War","Capt. Raj Kumar – 1999 War","Lt. Manoj Kumar – 1999 War","Maj. Shyam Singh – 1999 War",
+        "Capt. Jaswant Singh – 1999 War","Maj. Pritam Singh – 1999 War","Lt. Jagdish Singh – 1999 War","Maj. Narender Singh – 1999 War",
+        "Capt. Harcharan Singh – 1999 War","Maj. Charanjit Singh – 1999 War","Lt. Dilbagh Singh – 1999 War","Maj. Baljinder Singh – 1999 War",
+        "Capt. Harvinder Kumar – 1999 War","Lt. Surinder Kumar – 1999 War","Maj. Gurbax Singh – 1999 War","Capt. Baldev Kumar – 1999 War",
+        "Lt. Kuldip Singh – 1999 War","Maj. Jasbir Singh – 1999 War","Capt. Inderjeet Singh – 1999 War","Lt. Sukhdev Singh – 1999 War",
+        "Maj. Dharam Pal Singh – 1999 War","Capt. Amardeep Singh – 1999 War","Lt. Harbhajan Singh – 1999 War","Maj. Kartar Singh – 1999 War",
+        "Capt. Manpreet Singh – 1999 War","Lt. Gopal Singh – 1999 War","Maj. Sukhwinder Singh – 1999 War","Capt. Balwinder Singh – 1999 War",
+        "Lt. Gurdeep Singh – 1999 War","Maj. Swaran Singh – 1999 War","Capt. Surjit Singh – 1999 War","Lt. Mandeep Singh – 1999 War",
+        "Maj. Hardev Singh – 1999 War","Capt. Jasdeep Singh – 1999 War","Lt. Kulvinder Singh – 1999 War","Maj. Ranjit Singh – 1999 War"
+      ];
+
+      const grid = document.getElementById('wallGrid');
+      function render(list){
+        grid.innerHTML = '';
+        list.forEach((n,i)=>{
+          const cell = create('div'); cell.className='hero-card';
+          cell.innerHTML = `<div style="font-weight:800">${escapeHtml(n)}</div><div class="muted">Tap to salute</div>`;
+          // salute badge
+          const badge = create('div'); badge.className='salute-badge'; badge.textContent='🇮🇳 SALUTE'; cell.appendChild(badge);
+          cell.addEventListener('click', ()=>{
+            badge.style.display='block';
+            setTimeout(()=> badge.style.display='none',1100);
+            // gentle animation
+            cell.animate([{ transform:'translateY(0)' }, { transform:'translateY(-8px)' }, { transform:'translateY(0)' }], { duration:700, easing:'cubic-bezier(.2,.9,.2,1)' });
+            // tiny beep
+            try{ const ctx = new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.frequency.value=720; g.gain.value=0.02; o.connect(g); g.connect(ctx.destination); o.start(); setTimeout(()=>{ o.stop(); ctx.close(); },140); }catch(e){}
+          });
+          grid.appendChild(cell);
+        });
+      }
+      render(names);
+
+      document.getElementById('searchHero').addEventListener('input', (e)=>{
+        const q = e.target.value.trim().toLowerCase();
+        if(!q) return render(names);
+        render(names.filter(x=>x.toLowerCase().includes(q)));
+      });
+
+      function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+    })();
+
+    /* ----------------- Selfie (WebRTC + Canvas overlay) ----------------- */
+    (function selfie(){
+      const video = $('#selfieVideo'), canvas = $('#selfieCanvas'), startBtn = $('#startCam'), stopBtn = $('#stopCam');
+      const captureBtn = $('#capture'), downloadBtn = $('#downloadSelfie'), shareBtn = $('#shareSelfie');
+      const filterSelect = $('#filterSelect'), filterOpacity = $('#filterOpacity'), status = $('#selfieStatus');
+      let stream = null, lastBlobUrl = null;
+
+      function setCanvasSize(){
+        const w = video.videoWidth || 640;
+        const h = video.videoHeight || 480;
+        canvas.width = w; canvas.height = h;
+        canvas.style.height = Math.min(320, Math.round(h * (canvas.clientWidth / canvas.width))) + 'px';
+      }
+
+      async function startCamera(){
+        status.textContent = 'Requesting camera...';
+        try{
+          stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user', width:{ideal:1280}, height:{ideal:720} }, audio:false });
+          video.srcObject = stream;
+          video.muted = true;
+          video.setAttribute('playsinline','');
+          await video.play();
+          setTimeout(setCanvasSize, 300);
+          video.addEventListener('loadedmetadata', setCanvasSize, {once:true});
+          status.textContent = 'Camera running';
+        }catch(err){
+          console.error(err);
+          status.textContent = 'Camera access denied or unavailable';
+          alert('Camera access denied or unavailable. Ensure HTTPS and permission granted.');
+        }
+      }
+
+      function stopCamera(){
+        if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; video.srcObject = null; status.textContent = 'Camera stopped'; }
+        else status.textContent = 'No camera running';
+      }
+
+      // drawing overlay loop
+      (function draw(){
+        const ctx = canvas.getContext('2d');
+        if(video && video.readyState >= 2 && canvas.width && canvas.height){
+          ctx.save();
+          // mirror for selfie feel
+          ctx.scale(-1,1);
+          ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+          ctx.restore();
+
+          // overlay
+          ctx.globalAlpha = parseFloat(filterOpacity.value || 0.9);
+          const sel = filterSelect.value;
+          if(sel === 'tiranga'){
+            ctx.fillStyle = 'rgba(255,153,51,0.9)'; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(canvas.width*0.45,0); ctx.lineTo(0,canvas.height*0.28); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.beginPath(); ctx.moveTo(0,canvas.height*0.28); ctx.lineTo(canvas.width*0.45,0); ctx.lineTo(canvas.width*0.45,canvas.height*0.18); ctx.closePath(); ctx.fill();
+            ctx.fillStyle = 'rgba(19,136,8,0.9)'; ctx.beginPath(); ctx.moveTo(0,canvas.height*0.36); ctx.lineTo(canvas.width*0.45,canvas.height*0.18); ctx.lineTo(0,canvas.height*0.64); ctx.closePath(); ctx.fill();
+            ctx.globalAlpha = 1;
+            ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = Math.max(3, Math.round(canvas.width*0.006));
+            ctx.beginPath(); ctx.arc(canvas.width*0.11, canvas.height*0.12, Math.max(14, Math.round(canvas.width*0.04)), 0, Math.PI*2); ctx.stroke();
+          } else if(sel === 'sparkle'){
+            for(let i=0;i<30;i++){ ctx.fillStyle = `rgba(255,215,0,${Math.random()})`; ctx.fillRect(Math.random()*canvas.width*0.45, Math.random()*canvas.height*0.45, 1+Math.random()*3,1+Math.random()*3); }
+          } else {
+            const bw = Math.round(canvas.width * 0.28), bh = Math.round(canvas.height * 0.1);
+            ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.fillRect(canvas.width - bw - 12, canvas.height - bh - 12, bw, bh);
+            ctx.fillStyle = 'rgba(255,153,51,0.95)'; ctx.font = `${Math.max(18, Math.round(canvas.width*0.03))}px sans-serif`; ctx.fillText('JAI HIND', canvas.width - bw + 8, canvas.height - bh/2 + 8);
+          }
+        } else if(canvas.width && canvas.height){
+          const ctx2 = canvas.getContext('2d'); ctx2.fillStyle='rgba(0,0,0,0.4)'; ctx2.fillRect(0,0,canvas.width,canvas.height);
+        }
+        requestAnimationFrame(draw);
+      })();
+
+      async function captureBlob(){
+        if(!canvas.width || !canvas.height){ alert('Camera not ready. Start camera first.'); return null; }
+        return new Promise(resolve => canvas.toBlob(b => resolve(b), 'image/png'));
+      }
+
+      $('#capture').addEventListener('click', async ()=>{
+        const blob = await captureBlob(); if(!blob) return;
+        const url = URL.createObjectURL(blob);
+        lastBlobUrl && URL.revokeObjectURL(lastBlobUrl);
+        lastBlobUrl = url;
+        const w = window.open('','_blank');
+        if(w){ w.document.write('<img src="'+url+'" style="max-width:100%"><p style="font-family:Inter,Arial">Right-click to save.</p>'); w.document.close(); status.textContent='Preview opened'; }
+        else { alert('Popup blocked. Use Download to save.'); status.textContent='Popup blocked — use download'; }
+      });
+
+      $('#downloadSelfie').addEventListener('click', async ()=>{
+        const blob = await captureBlob(); if(!blob) return;
+        const a = create('a'); const url = URL.createObjectURL(blob);
+        a.href = url; a.download = 'flag_selfie.png'; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=> URL.revokeObjectURL(url), 3000); status.textContent='Downloaded';
+      });
+
+      $('#shareSelfie').addEventListener('click', async ()=>{
+        try{
+          const blob = await captureBlob(); if(!blob) return;
+          const file = new File([blob], 'flag_selfie.png', { type:'image/png' });
+          if(navigator.canShare && navigator.canShare({ files:[file] })){
+            await navigator.share({ files:[file], title:'Flag Selfie', text:'Jai Hind!'}); status.textContent='Shared';
+          } else {
+            status.textContent='Share not supported — downloading';
+            const a = create('a'); const url = URL.createObjectURL(blob); a.href = url; a.download = 'flag_selfie.png'; document.body.appendChild(a); a.click(); a.remove();
+            setTimeout(()=> URL.revokeObjectURL(url), 3000);
+          }
+        }catch(err){ console.error(err); alert('Share failed: ' + (err && err.message || 'unknown')); }
+      });
+
+      $('#startCam').addEventListener('click', startCamera);
+      $('#stopCam').addEventListener('click', stopCamera);
+    })();
+
+    /* ----------------- Gallery (placeholder enhancement) ----------------- */
+    (function galleryEnhance(){
+      // click to open preview
+      document.querySelectorAll('.gallery img').forEach(img=>{
+        img.addEventListener('click', ()=> {
+          const w = window.open('','_blank');
+          w.document.write(`<img src="${img.src}" style="max-width:100%"><p style="font-family:Inter,Arial">Right-click to save image</p>`);
+        });
+      });
+    })();
+
+    /* ----------------- Freedom Bot & Chat (local) ----------------- */
+    (function botAndChat(){
+      const botInput = $('#botInput'), botAsk = $('#botAsk'), botReplies = $('#botReplies'), botClear = $('#botClear');
+      const chatInput = $('#chatInput'), sendChat = $('#sendChat'), chatWindow = $('#chatWindow');
+      const replies = {
+        'bhagat': 'Bhagat Singh (1907–1931) — a young revolutionary admired widely.',
+        'subhas': 'Subhas Chandra Bose — leader of the Indian National Army (INA).',
+        'kargil': 'Kargil (1999) — heroes honored, recall Vikram Batra and many brave soldiers.',
+        'independence': 'India gained independence on 15 August 1947.',
+        'default':'Jai Hind! Ask about a fighter, a date, or an event.'
+      };
+      botAsk.addEventListener('click', ()=>{
+        const q = (botInput.value||'').trim().toLowerCase();
+        if(!q) return;
+        let found = null;
+        Object.keys(replies).forEach(k => { if(k!=='default' && q.includes(k)) found = k; });
+        const res = replies[found] || replies['default'];
+        const d = create('div'); d.style.marginBottom='8px'; d.innerHTML = `<strong>Freedom Bot</strong>: <div class="muted">${res}</div>`;
+        botReplies.prepend(d); botInput.value='';
+      });
+      botClear.addEventListener('click', ()=> botReplies.innerHTML='');
+
+      sendChat.addEventListener('click', ()=>{
+        const t = (chatInput.value||'').trim(); if(!t) return;
+        const d = create('div'); d.style.marginBottom='8px'; d.innerHTML = `<strong>You</strong>: <span>${escapeHtml(t)}</span>`;
+        chatWindow.prepend(d); chatInput.value='';
+        // auto bot echo
+        setTimeout(()=>{ const r = replies['default']; const e = create('div'); e.style.marginBottom='8px'; e.innerHTML = `<strong>Freedom Bot</strong>: <span class="muted">${r}</span>`; chatWindow.prepend(e); }, 500);
+      });
+
+      function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+    })();
+
+    /* ----------------- Quick features & UI polish ----------------- */
+    (function ui(){
+      // onlineCount animation demo
+      const oc = $('#onlineCount'); let v=1200; oc.textContent = v.toLocaleString();
+      setInterval(()=>{ v += Math.floor(Math.random()*6); oc.textContent = v.toLocaleString() }, 2700);
+
+      // tour button
+      $('#tourBtn').addEventListener('click', ()=> {
+        const seq = ['#home','#wall','#selfie','#gallery','#events','#timeline']; let i=0;
+        const next = ()=>{ if(i>=seq.length) return; const el = document.querySelector(seq[i]); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); i++; setTimeout(next,800); };
+        next();
+      });
+
+      // fire btn
+      $('#fireBtn').addEventListener('click', ()=>{
+        for(let i=0;i<18;i++){
+          const dot = create('div'); dot.style.position='fixed'; dot.style.left = (12 + Math.random()*76) + '%'; dot.style.bottom='8%'; dot.style.width=dot.style.height=(6+Math.random()*12)+'px'; dot.style.borderRadius='50%';
+          dot.style.background = Math.random()>0.5 ? 'rgba(255,153,51,0.95)' : 'rgba(19,136,8,0.95)'; dot.style.zIndex=9999; document.body.appendChild(dot);
+          const dy = 240 + Math.random()*180;
+          dot.animate([{ transform:'translateY(0) scale(1)', opacity:1 }, { transform:`translateY(-${dy}px) scale(.35)`, opacity:0 }], { duration:900 + Math.random()*700, easing:'cubic-bezier(.2,.8,.2,1)'});
+          setTimeout(()=>dot.remove(),1600);
+        }
+      });
+
+      // anthem play + salute
+      let anthemAudio = new Audio();
+      anthemAudio.src = ''; // add licensed anthem URL in production
+      anthemAudio.loop = true; anthemAudio.preload = 'none'; let playing=false;
+      $('#anthemPlay').addEventListener('click', async ()=>{
+        try{
+          if(!anthemAudio.src){ // demo beep
+            const ctx = new (window.AudioContext||window.webkitAudioContext)();
+            const o = ctx.createOscillator(); const g=ctx.createGain(); o.frequency.value=440; g.gain.value=0.02; o.connect(g); g.connect(ctx.destination); o.start();
+            setTimeout(()=>{ o.stop(); ctx.close(); },800); return;
+          }
+          if(!playing){ await anthemAudio.play(); playing=true; $('#anthemPlay').textContent='Pause'; }
+          else { anthemAudio.pause(); playing=false; $('#anthemPlay').textContent='Play'; }
+        }catch(e){ alert('Audio blocked — user gesture required'); }
+      });
+      $('#anthemSalute').addEventListener('click', ()=> {
+        const overlay = create('div'); overlay.style.position='fixed'; overlay.style.inset=0; overlay.style.display='grid'; overlay.style.placeItems='center'; overlay.style.zIndex=99999;
+        overlay.innerHTML = `<div style="padding:26px 36px;border-radius:20px;background:linear-gradient(90deg,var(--saffron),var(--green));color:#012;font-weight:900;font-size:34px;box-shadow:0 30px 80px rgba(0,0,0,0.6)">SALUTE 🇮🇳</div>`;
+        document.body.appendChild(overlay);
+        setTimeout(()=> overlay.remove(),1400);
+      });
+
+      // theme toggle
+      $('#toggleTheme').addEventListener('click', ()=> {
+        const body = document.body;
+        if(body.style.background.includes('#fff')){ // back to dark
+          body.style.background = 'radial-gradient(800px 400px at 10% 10%, rgba(255,153,51,0.03), transparent 6%), radial-gradient(900px 450px at 95% 90%, rgba(19,136,8,0.02), transparent 8%), linear-gradient(180deg,#040817 0%, #06142a 100%)';
+          $('#dayNight').textContent = 'Night';
+        } else {
+          body.style.background = 'linear-gradient(180deg,#fff 0%, #f7f7f7 100%)';
+          $('#dayNight').textContent = 'Day';
+        }
+      });
+
+      // generate card: client-only
+      $('#genCard').addEventListener('click', ()=>{
+        const name = document.getElementById('cardName').value || 'Friend';
+        const blob = new Blob([`<html><body style="background:#012;color:#fff;font-family:Inter,Arial;padding:30px"><h1>Jai Hind</h1><p>${name}, celebrate the spirit of freedom!</p></body></html>`], {type:'text/html'});
+        const url = URL.createObjectURL(blob);
+        const a = create('a'); a.href = url; a.download = `independence_card_${name.replace(/\s+/g,'_')}.html`; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=> URL.revokeObjectURL(url),3000);
+      });
+
+      // quick scroll for nav links
+      document.querySelectorAll('nav.topnav a').forEach(a => a.addEventListener('click', (e)=>{ e.preventDefault(); const id = a.getAttribute('href'); const el = document.querySelector(id); if(el) el.scrollIntoView({behavior:'smooth', block:'center'}); }));
+
+      // smooth buttons in content
+      document.querySelectorAll('.pill[data-s]').forEach(btn => btn.addEventListener('click', ()=> {
+        const s = btn.getAttribute('data-s'); const el = document.querySelector(s); if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+      }));
+    })();
+
+    /* ----------------- PWA SW stub (inline) ----------------- */
+    (function sw(){
+      if('serviceWorker' in navigator){
+        const code = "const C='jai-hind-v1';self.addEventListener('install', e=>{self.skipWaiting(); e.waitUntil(caches.open(C).catch(()=>{}));}); self.addEventListener('fetch', e=>{ e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))); });";
+        const blob = new Blob([code], {type:'application/javascript'});
+        const url = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(url).catch(()=>{});
+      }
+    })();
+
+    // small escapeHtml utility
+    function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c])); }
+
+  })();
+  </script>
+</body>
+</html>                               
